@@ -1,0 +1,39 @@
+name: "Nexus CLI DevContainer"
+
+# Sử dụng Node base image (nếu bạn cần nodejs) hoặc Linux general
+image: mcr.microsoft.com/devcontainers/base:ubuntu
+
+# Or bạn có thể dùng image với Node.js nếu cần
+# image: mcr.microsoft.com/devcontainers/javascript-node:20
+
+features:
+  # Nếu cần Docker-in-Docker bạn có thể bật feature này
+  # ghcr.io/devcontainers/features/docker-in-docker: 2
+
+# Các môi trường trước khi vào container
+postCreateCommand: |
+  # Cập nhật hệ thống
+  apt-get update && apt-get install -y curl
+  # Cài Nexus CLI non-interactive
+  curl -sSf https://cli.nexus.xyz/ -o install_nexus.sh
+  chmod +x install_nexus.sh
+  NONINTERACTIVE=1 ./install_nexus.sh
+  # (tuỳ chọn) đăng nhập/register nếu bạn có NODE_ID hoặc WALLET_ADDRESS
+  # nexus-cli register-user --wallet-address <WALLET>
+  # nexus-cli register-node
+  # nexus-cli start --node-id <NODE_ID>
+
+# Mở các port nếu cần (CLI có thể không cần port mở!)
+forwardPorts: []
+
+# Extensions VSCode nếu bạn muốn
+customizations:
+  vscode:
+    extensions:
+      - ms-vscode.vscode-typescript-next
+      - esbenp.prettier-vscode
+
+# WorkspaceMount & WorkspaceFolder tuỳ bạn
+workspaceFolder: /workspace
+workspaceMount: source=${localWorkspaceFolder},target=/workspace,type=bind
+
